@@ -1,0 +1,16 @@
+name: Validação do Terraform e Cria PR para develop
+
+on:
+  push:
+    branches:
+      - 'feature/**'
+
+jobs:
+  terraform:
+    name: "Terraform"
+    uses: dev-gustaavo/terraform-reusable/.github/workflows/1-validated-terraform-crate-pr-develop.yaml@main
+    with:
+      pr_branch_name: 'develop'
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
