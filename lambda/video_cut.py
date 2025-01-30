@@ -18,7 +18,12 @@ def lambda_handler(event, context):
             if not presigned_url:
                 raise RuntimeError("Erro ao gerar URL presignada.")
 
+            video_id = get_video_id(bucket_name, object_key)
+            if not video_id:
+                raise RuntimeError("Erro ao obter video id.")
+
             message = {
+                "videoId": video_id,
                 "bucket": bucket_name,
                 "key": object_key,
                 "presigned_url": presigned_url
@@ -47,4 +52,12 @@ def generate_presigned_url(bucket_name, object_key):
         return response
     except Exception as e:
         print(f"Erro ao gerar URL: {str(e)}")
+        return None
+
+def get_video_id(bucket_name, object_key):
+    try:
+        response = s3_client.head_object(Bucket=bucket_name, Key=object_key)['Metadata']
+        return response.get('videoid', 'N/A')
+    except Exception as e:
+        print(f"Erro ao obter metadata: {str(e)}")
         return None
