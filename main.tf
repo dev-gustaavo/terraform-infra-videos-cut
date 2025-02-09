@@ -6,6 +6,10 @@ resource "aws_s3_bucket" "videos_cut" {
   bucket = "videos-cut"
 }
 
+resource "aws_s3_bucket" "videos_cut_download" {
+  bucket = "videos-cut-download"
+}
+
 resource "aws_sqs_queue" "video_cut_queue" {
   name = "video-cut-queue"
 }
@@ -83,7 +87,7 @@ resource "aws_s3_bucket_notification" "s3_event" {
   lambda_function {
     lambda_function_arn = aws_lambda_function.lambda_videos_cut.arn
     events              = ["s3:ObjectCreated:*"]
-    filter_prefix       = ""
+    filter_prefix       = "upload/"
     filter_suffix       = ".mp4"
   }
 }
@@ -94,4 +98,14 @@ resource "aws_lambda_permission" "s3_permission" {
   function_name = aws_lambda_function.lambda_videos_cut.function_name
   principal     = "s3.amazonaws.com"
   source_arn    = aws_s3_bucket.videos_cut.arn
+}
+
+resource "aws_sns_topic" "video_processing_errors" {
+  name = "video-processing-errors"
+}
+
+resource "aws_sns_topic_subscription" "email_subscription" {
+  topic_arn = aws_sns_topic.video_processing_errors.arn
+  protocol  = "email"
+  endpoint  = "gtbarbosa@live.com"
 }
