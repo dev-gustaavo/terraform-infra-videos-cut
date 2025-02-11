@@ -9,3 +9,7 @@ output "sqs_url" {
 output "lambda_function_name" {
   value = aws_lambda_function.lambda_videos_cut.function_name
 }
+
+output "sns_arn" {
+  value = aws_sns_topic.video_processing_errors.arn
+}
