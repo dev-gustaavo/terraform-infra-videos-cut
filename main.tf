@@ -12,6 +12,7 @@ resource "aws_s3_bucket" "videos_cut_download" {
 
 resource "aws_sqs_queue" "video_cut_queue" {
   name = "video-cut-queue"
+  visibility_timeout_seconds = 3600
 }
 
 resource "aws_iam_role" "lambda_execution_role" {
